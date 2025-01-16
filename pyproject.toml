@@ -1,0 +1,9 @@
+[project]
+name = "nordvpn-wireguard"
+version = "0.1.0"
+description = "NordVPN + WireGuard config generator"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "httpx>=0.28.1",
+]
