@@ -1,8 +1,9 @@
-from src import core, ui
-from src import nordvpn
+import pathlib
+
+from src import core, nordvpn, ui
 
 
-def main():
+def main() -> None:
     token = input("Enter the NordVPN Access Token: ")
     token = token.strip()
     if not token:
@@ -36,10 +37,10 @@ def main():
             .replace(" ", "_")
         )
         config_filename = f"{server_name}.conf"
-        with open(config_filename, "wt") as f:
+        with pathlib.Path(config_filename).open("w") as f:
             _ = f.write(config)
 
-        print(f"New configuration has been created: {config_filename}")
+        print(f"New configuration has been created: {config_filename}")  # noqa: T201
 
 
 if __name__ == "__main__":

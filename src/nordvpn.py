@@ -1,10 +1,11 @@
 import base64
+
+from http import HTTPStatus
 from typing import Any, Literal, TypedDict
 
 import httpx
 
 from src.btypes import Item, NameValue
-
 
 WireguardProtocol = Literal["wireguard_udp"]
 
@@ -52,13 +53,11 @@ class Server(TypedDict):
 
 def fetch_credentials(token: str) -> Credentials | None:
     token_encoded = base64.b64encode(f"token:{token}".encode())
-    headers = {
-        "Authorization": "Basic {auth}".format(auth=token_encoded.decode())
-    }
+    headers = {"Authorization": f"Basic {token_encoded.decode()}"}
 
     url = "https://api.nordvpn.com/v1/users/services/credentials"
     resp = httpx.get(url, headers=headers)
-    if resp.status_code != 200:
+    if resp.status_code != HTTPStatus.OK:
         return None
 
     data = resp.json()
@@ -70,19 +69,16 @@ def fetch_credentials(token: str) -> Credentials | None:
     }
 
 
-def _get(url: str) -> Any:
+def _get(url: str) -> Any:  # noqa: ANN401
     resp = httpx.get(url)
-    if resp.status_code != 200:
+    if resp.status_code != HTTPStatus.OK:
         return None
 
-    data = resp.json()
-    return data
+    return resp.json()
 
 
 def fetch_countries() -> list[Item[Country]] | None:
-    countries: list[Country] | None = _get(
-        "https://api.nordvpn.com/v1/servers/countries"
-    )
+    countries: list[Country] | None = _get("https://api.nordvpn.com/v1/servers/countries")
     if not countries:
         return None
 
@@ -131,13 +127,11 @@ def render_config_template(
     dns: str = "9.9.9.9, 1.1.1.1",
     allowed_ips: str = "0.0.0.0/0",
 ) -> str:
-    wireguards = (
-        s for s in server["technologies"] if s["identifier"] == "wireguard_udp"
-    )
+    wireguards = (s for s in server["technologies"] if s["identifier"] == "wireguard_udp")
     wireguard = next(wireguards)
     public_key = wireguard["metadata"][0]["value"]
 
-    config = f"""
+    return f"""
     [Interface]
     Address = {address}
     PrivateKey = {credentials["private_key"]}
@@ -148,5 +142,3 @@ def render_config_template(
     Endpoint = {server["station"]}:51820
     AllowedIPs = {allowed_ips}
     """
-
-    return config

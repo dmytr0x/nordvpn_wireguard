@@ -5,7 +5,7 @@ from src.btypes import Item
 
 def select_single_item[T](items: Sequence[Item[T]]) -> T | None:
     for i, item in enumerate(items, 1):
-        print(f"{i}. {item['title']}")
+        print(f"{i}. {item['title']}")  # noqa: T201
 
     num = input("Select item: ")
     try:
@@ -26,11 +26,9 @@ def int_or_none(value: str) -> int | None:
 
 def select_multiple_items[T](items: Sequence[Item[T]]) -> list[T] | None:
     for i, item in enumerate(items, 1):
-        print(f"{i}. {item['title']}")
+        print(f"{i}. {item['title']}")  # noqa: T201
 
-    raw_input = input(
-        "Select items ( Examples: `42` or `1,2,3` or `10..25` ): "
-    )
+    raw_input = input("Select items ( Examples: `42` or `1,2,3` or `10..25` ): ")
 
     if ".." in raw_input:
         f, t = raw_input.strip().split("..")
@@ -42,9 +40,7 @@ def select_multiple_items[T](items: Sequence[Item[T]]) -> list[T] | None:
 
     elif "," in raw_input:
         _items = [
-            items[n - 1]["data"]
-            for rn in raw_input.strip().split(",")
-            if (n := int_or_none(rn))
+            items[n - 1]["data"] for rn in raw_input.strip().split(",") if (n := int_or_none(rn))
         ]
         return _items or None
 
