@@ -92,6 +92,10 @@ select = [
     "RUF"
 ]
 
+ignore= [
+    "COM812"  # 	missing-trailing-comma: https://docs.astral.sh/ruff/rules/missing-trailing-comma/
+]
+
 [lint.mccabe]
 # Flag errors (`C901`) whenever the complexity level exceeds 10.
 max-complexity = 10
