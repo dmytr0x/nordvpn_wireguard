@@ -4,6 +4,7 @@ from src import core, nordvpn, ui
 
 
 def main() -> None:
+    a = "Boom!"
     token = input("Enter the NordVPN Access Token: ")
     token = token.strip()
     if not token:
