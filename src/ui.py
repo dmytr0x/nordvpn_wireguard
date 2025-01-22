@@ -30,7 +30,7 @@ def select_multiple_items[T](items: Sequence[Item[T]]) -> list[T] | None:
         _from, _to = int_from_str(f), int_from_str(t)
         if _from is None or _to is None:
             return None
-        if _from < _to:
+        if _from <= _to:
             return [items[n - 1]["data"] for n in range(_from, _to + 1)]
 
     elif "," in raw_input:

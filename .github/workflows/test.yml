@@ -1,4 +1,4 @@
-name: lint
+name: Quality Checks
 
 on:
   push:
@@ -7,8 +7,9 @@ on:
   pull_request:
 
 jobs:
-  linters:
+  regression:
     runs-on: ubuntu-latest
+    timeout-minutes: 2
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -33,3 +34,6 @@ jobs:
 
       - name: Mypy check
         run: uv run mypy .
+
+      - name: Unit tests
+        run: uv run pytest .
