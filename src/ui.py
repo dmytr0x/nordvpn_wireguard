@@ -7,13 +7,12 @@ def select_single_item[T](items: Sequence[Item[T]]) -> T | None:
     for i, item in enumerate(items, 1):
         print(f"{i}. {item['title']}")  # noqa: T201
 
-    num = input("Select item: ")
-    try:
-        num = int(num)
-    except (ValueError, TypeError):
+    raw_input = input("Select item: ")
+    selected = int_or_none(raw_input)
+    if selected is None or not (0 < selected < len(items)):
         return None
 
-    return items[num - 1]["data"]
+    return items[selected - 1]["data"]
 
 
 def int_or_none(value: str) -> int | None:
@@ -31,6 +30,7 @@ def select_multiple_items[T](items: Sequence[Item[T]]) -> list[T] | None:
     raw_input = input("Select items ( Examples: `42` or `1,2,3` or `10..25` ): ")
 
     if ".." in raw_input:
+        # The range was selected
         f, t = raw_input.strip().split("..")
         _from, _to = int_or_none(f), int_or_none(t)
         if _from is None or _to is None:
@@ -39,14 +39,16 @@ def select_multiple_items[T](items: Sequence[Item[T]]) -> list[T] | None:
             return [items[n - 1]["data"] for n in range(_from, _to + 1)]
 
     elif "," in raw_input:
-        _items = [
+        # The sequence was selected
+        items_data = [
             items[n - 1]["data"] for rn in raw_input.strip().split(",") if (n := int_or_none(rn))
         ]
-        return _items or None
+        return items_data or None
 
     elif raw_input.strip().isnumeric():
+        # The single item was selected
         if n := int_or_none(raw_input):
-            item = items[n - 1]["data"]
-            return [item]
+            item_data = items[n - 1]["data"]
+            return [item_data]
 
     return None
