@@ -15,3 +15,6 @@ format-fix:
 
 mypy:
 	uv run mypy .
+
+test:
+	uv run pytest .
