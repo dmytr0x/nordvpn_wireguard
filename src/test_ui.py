@@ -1,4 +1,4 @@
-# ruff: noqa: ANN001, ANN101, ANN201, S101
+# ruff: noqa: ANN001, ANN101, ANN201, S101, PLR2004
 from unittest.mock import patch
 
 import pytest
