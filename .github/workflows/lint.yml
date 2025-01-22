@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  ruff:
+  linters:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -27,3 +27,9 @@ jobs:
 
       - name: Run format
         run: uv run ruff format --check --diff && uv run ruff check --select I
+
+      - name: Mypy version
+        run: uv run mypy --version
+
+      - name: Mypy check
+        run: uv run mypy .
