@@ -34,16 +34,16 @@ def select_multiple_items[T](items: Sequence[Item[T]]) -> list[T] | None:
             return [items[n - 1]["data"] for n in range(_from, _to + 1)]
 
     elif "," in raw_input:
-        _items = [
+        items_data = [
             items[n - 1]["data"]
             for raw_number in raw_input.strip().split(",")
             if (n := int_from_str(raw_number))
         ]
-        return _items or None
+        return items_data or None
 
     elif raw_input.strip().isnumeric():
         if n := int_from_str(raw_input):
-            item = items[n - 1]["data"]
-            return [item]
+            item_data = items[n - 1]["data"]
+            return [item_data]
 
     return None
