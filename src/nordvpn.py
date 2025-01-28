@@ -120,6 +120,18 @@ def fetch_recommendations(
     ]
 
 
+CONFIG_TEMPLATE = """[Interface]
+Address = {address}
+PrivateKey = {private_key}
+DNS = {dns}
+
+[Peer]
+PublicKey = {public_key}
+Endpoint = {endpoint}
+AllowedIPs = {allowed_ips}
+"""
+
+
 def render_config_template(
     credentials: Credentials,
     server: Server,
@@ -131,14 +143,11 @@ def render_config_template(
     wireguard = next(wireguards)
     public_key = wireguard["metadata"][0]["value"]
 
-    return f"""
-    [Interface]
-    Address = {address}
-    PrivateKey = {credentials["private_key"]}
-    DNS = {dns}
-
-    [Peer]
-    PublicKey = {public_key}
-    Endpoint = {server["station"]}:51820
-    AllowedIPs = {allowed_ips}
-    """
+    return CONFIG_TEMPLATE.format(
+        address=address,
+        private_key=credentials["private_key"],
+        dns=dns,
+        public_key=public_key,
+        endpoint=f"{server['station']}:51820",
+        allowed_ips=allowed_ips,
+    )
