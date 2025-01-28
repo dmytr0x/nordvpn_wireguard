@@ -4,12 +4,13 @@ The script generates WireGuard configuration files using the infrastructure prov
 
 ## Dependencies
 ```sh
-make
+just
 python 3.13
 ```
 
 ## Installation
 ```sh
+brew install just
 uv python install
 uv sync
 ```
@@ -21,5 +22,5 @@ source .venv/bin/activate
 
 ## Run the script
 ```sh
-make run
+just run
 ```
