@@ -132,22 +132,30 @@ AllowedIPs = {allowed_ips}
 """
 
 
+DEFAULT_ADDRESS = "10.5.0.2/32"
+DEFAULT_DNS = "9.9.9.9, 1.1.1.1"
+DEFAULT_ALLOWED_IPS = "0.0.0.0/0"
+WIREGUARD_IDENTIFIER = "wireguard_udp"
+WIREGUARD_PORT = 51820
+
+
 def render_config_template(
     credentials: Credentials,
     server: Server,
-    address: str = "10.5.0.2/32",
-    dns: str = "9.9.9.9, 1.1.1.1",
-    allowed_ips: str = "0.0.0.0/0",
+    address: str = DEFAULT_ADDRESS,
+    dns: str = DEFAULT_DNS,
+    allowed_ips: str = DEFAULT_ALLOWED_IPS,
 ) -> str:
-    wireguards = (s for s in server["technologies"] if s["identifier"] == "wireguard_udp")
-    wireguard = next(wireguards)
-    public_key = wireguard["metadata"][0]["value"]
+    wireguard_servers = (s for s in server["technologies"] if s["identifier"] == "wireguard_udp")
+    wireguard_server = next(wireguard_servers)
+    public_key = wireguard_server["metadata"][0]["value"]
+    endpoint = f"{server['station']}:{WIREGUARD_PORT}"
 
     return CONFIG_TEMPLATE.format(
         address=address,
         private_key=credentials["private_key"],
         dns=dns,
         public_key=public_key,
-        endpoint=f"{server['station']}:51820",
+        endpoint=endpoint,
         allowed_ips=allowed_ips,
     )
