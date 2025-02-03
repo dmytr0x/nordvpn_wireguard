@@ -1,0 +1,9 @@
+{
+  "lsp": {
+    "ruff": {
+      "enabled": true,
+      "command": "ruff",
+      "args": ["--config", "ruff.toml"]
+    }
+  }
+}
