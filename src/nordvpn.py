@@ -84,10 +84,7 @@ def fetch_countries() -> list[Item[Country]] | None:
 
     return [
         {
-            "title": "{name} ({serverCount})".format(
-                name=country["name"],
-                serverCount=country["serverCount"],
-            ),
+            "title": f"{country['name']} ({country['serverCount']})",
             "data": country,
         }
         for country in countries
@@ -108,12 +105,12 @@ def fetch_recommendations(
     if not servers:
         return None
 
+    def __get_city(server: Server) -> str:
+        return server["locations"][0]["country"]["city"]["name"]
+
     return [
         {
-            "title": "{name} ({city})".format(
-                name=server["name"],
-                city=server["locations"][0]["country"]["city"]["name"],
-            ),
+            "title": f"{server['name']} ({__get_city(server)})",
             "data": server,
         }
         for server in servers
