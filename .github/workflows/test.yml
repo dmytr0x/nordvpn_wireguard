@@ -17,6 +17,9 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
 
+      - name: Install Task
+        uses: go-task/setup-task@v2
+
       - name: Install dependencies
         run: uv sync --all-extras --dev
 
@@ -24,19 +27,19 @@ jobs:
         run: uv run ruff --version
 
       - name: Run lint
-        run: uv run ruff check
+        run: task lint
 
       - name: Run format
-        run: uv run ruff format --check --diff && uv run ruff check --select I
+        run: task format
 
       - name: Mypy version
         run: uv run mypy --version
 
       - name: Mypy check
-        run: uv run mypy .
+        run: task mypy
 
       - name: Pytest version
         run: uv run pytest --version
 
       - name: Unit tests
-        run: uv run pytest .
+        run: task test
