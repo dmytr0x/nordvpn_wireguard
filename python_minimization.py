@@ -5,6 +5,7 @@ import subprocess
 import sys
 
 from collections.abc import Callable, Sequence
+from pathlib import Path
 
 
 def format_with_ruff(files: Sequence[str]) -> bool:
@@ -25,9 +26,11 @@ def format_with_ruff(files: Sequence[str]) -> bool:
         *files,
     ]
 
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    result = subprocess.run(  # noqa: S603 - the command is fixed and shell execution is disabled
+        cmd, capture_output=True, text=True, check=False
+    )
     if result.returncode != 0:
-        print(f"Error running ruff: {result.stderr}", file=sys.stderr)
+        sys.stderr.write(f"Error running ruff: {result.stderr}\n")
         return False
     return True
 
@@ -41,25 +44,27 @@ def _is_docstring_node(node: ast.stmt) -> bool:
 
 
 def remove_blank_lines(file_path: str) -> None:
-    with open(file_path) as f:
+    path = Path(file_path)
+    with path.open() as f:
         content = f.read()
 
     # Keep only non-empty lines (lines with at least one non-whitespace character)
     lines = content.split("\n")
     non_empty_lines = [line for line in lines if line.strip()]
 
-    with open(file_path, "w") as f:
+    with path.open("w") as f:
         f.write("\n".join(non_empty_lines))
 
 
 def remove_docstrings(file_path: str) -> bool:
-    with open(file_path) as f:
+    path = Path(file_path)
+    with path.open() as f:
         source = f.read()
 
     try:
         tree = ast.parse(source)
     except SyntaxError as e:
-        print(f"Error parsing {file_path}: {e}", file=sys.stderr)
+        sys.stderr.write(f"Error parsing {file_path}: {e}\n")
         return False
 
     # Target nodes that can have docstrings
@@ -80,7 +85,7 @@ def remove_docstrings(file_path: str) -> bool:
 
     # Reconstruct source code and write back
     minimized_source = ast.unparse(tree)
-    with open(file_path, "w") as f:
+    with path.open("w") as f:
         f.write(minimized_source)
 
     return True
@@ -100,23 +105,23 @@ def main() -> None:
     """Minimize Python files by removing docstrings and blank lines"""
     min_args = 2
     if len(sys.argv) < min_args:
-        print("Usage: python_minimization.py <file1> [file2] ...", file=sys.stderr)
+        sys.stderr.write("Usage: python_minimization.py <file1> [file2] ...\n")
         sys.exit(1)
 
     files = sys.argv[1:]
 
-    print("Step: Removing docstrings...")
+    sys.stdout.write("Step: Removing docstrings...\n")
     if not _process_files(files, remove_docstrings):
         sys.exit(1)
 
-    print("Step: Formatting with ruff...")
+    sys.stdout.write("Step: Formatting with ruff...\n")
     if not format_with_ruff(files):
         sys.exit(1)
 
-    print("Step: Removing blank lines...")
+    sys.stdout.write("Step: Removing blank lines...\n")
     _process_files(files, remove_blank_lines)
 
-    print("Done!")
+    sys.stdout.write("Done!\n")
 
 
 if __name__ == "__main__":
