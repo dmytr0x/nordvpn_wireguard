@@ -4,13 +4,13 @@ The script generates WireGuard configuration files using the infrastructure prov
 
 ## Dependencies
 ```sh
-just
+go-task
 python 3.13
 ```
 
 ## Installation
 ```sh
-brew install just
+brew install go-task
 uv python install
 uv sync
 ```
@@ -22,5 +22,5 @@ source .venv/bin/activate
 
 ## Run the script
 ```sh
-just run
+task cli
 ```

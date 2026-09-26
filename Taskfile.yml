@@ -1,0 +1,44 @@
+version: "3"
+
+tasks:
+  default:
+    desc: Run the config generator
+    cmds:
+      - task: cli
+
+  cli:
+    desc: Run the config generator
+    cmds:
+      - uv run main.py
+
+  lint:
+    desc: Run Ruff lint checks
+    cmds:
+      - uv run ruff check
+
+  lint-fix:
+    desc: Run Ruff lint fixes
+    cmds:
+      - uv run ruff check --fix --no-unsafe-fixes
+
+  format:
+    desc: Check formatting and import order
+    cmds:
+      - uv run ruff format --check --diff
+      - uv run ruff check --select I
+
+  format-fix:
+    desc: Format code and fix import order
+    cmds:
+      - uv run ruff format
+      - uv run ruff check --select I --fix
+
+  mypy:
+    desc: Run mypy type checks
+    cmds:
+      - uv run mypy .
+
+  test:
+    desc: Run unit tests
+    cmds:
+      - uv run pytest .
